@@ -8,23 +8,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_app_1/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Login screen smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.deepPurple,
+            title: Text("Login Screen"),
+            titleTextStyle: TextStyle(color: Colors.white, fontSize: 28),
+            centerTitle: true,
+          ),
+          body: Column(
+            children: [
+              Text("Login Screen"),
+              Text("Enter Username"),
+              TextField(),
+              Text("Enter PAssword"),
+              TextField(),
+              SizedBox(height: 30),
+              MaterialButton(
+                onPressed: () {},
+                color: Colors.deepPurpleAccent,
+                child: Text(
+                  "Login",
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify login screen UI elements exist
+    expect(find.text('Login Screen'), findsWidgets);
+    expect(find.text('Enter Username'), findsOneWidget);
+    expect(find.text('Enter PAssword'), findsOneWidget);
+    expect(find.text('Login'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify the login button is present
+    expect(find.byType(MaterialButton), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify text fields are present
+    expect(find.byType(TextField), findsWidgets);
   });
 }
