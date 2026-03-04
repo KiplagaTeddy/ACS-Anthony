@@ -1,7 +1,6 @@
 //import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
 
 import 'package:flutter/material.dart';
-import './configs/colors.dart';
 
 void main() {
   runApp(
