@@ -1,16 +1,34 @@
 # flutter_app_1
 
-A new Flutter project.
+A simple Flutter login screen demo.
 
-## Getting Started
+## 🚀 What this app does
 
-This project is a starting point for a Flutter application.
+- Shows a **login form** with username and password fields
+- Displays a **logo image** (`assets/nostro.jpg`) at the top
+- Includes a **login button** and basic **Signup / Reset** text links
+- Uses a **Material** UI scaffold with a custom AppBar color
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Getting Started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Prerequisites
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter SDK installed (run `flutter --version`)
+- A connected device, emulator, or simulator
+
+### Run the app
+
+```bash
+flutter pub get
+flutter run
+```
+
+## 📝 Where to edit
+
+- UI code: `lib/main.dart`
+- Logo image: `assets/nostro.jpg` (ensure it remains declared under `flutter.assets` in `pubspec.yaml`)
+
+## 🔧 Notes
+
+- This project currently has no backend authentication; it is a UI prototype.
+- You can customize the colors, text fields, and button behavior inside `lib/main.dart`.
