@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_1/controllers/logincontroller.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
+//LoginController loginController = Get.put(LoginController());
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -66,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                   'Enter your username',
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16.0),
                 ),
+
               ),
               const SizedBox(height: 10.0),
               TextField(
