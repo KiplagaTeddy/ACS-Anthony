@@ -93,7 +93,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<CourseModel>(
-                    value: selectedCourse,
+                    initialValue: selectedCourse,
                     hint: const Text(
                       'Select course',
                       style: TextStyle(color: AppConstants.textSecondary),
@@ -119,7 +119,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedDay,
+                    initialValue: selectedDay,
                     decoration: const InputDecoration(labelText: 'Day'),
                     dropdownColor: AppConstants.surfaceColor,
                     style: const TextStyle(color: AppConstants.textPrimary),
@@ -264,7 +264,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<CourseModel>(
-                    value: selectedCourse,
+                    initialValue: selectedCourse,
                     hint: const Text(
                       'Select course',
                       style: TextStyle(color: AppConstants.textSecondary),
@@ -290,7 +290,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedTerm,
+                    initialValue: selectedTerm,
                     decoration: const InputDecoration(labelText: 'Term'),
                     dropdownColor: AppConstants.surfaceColor,
                     style: const TextStyle(color: AppConstants.textPrimary),
@@ -383,8 +383,9 @@ class _ScheduleScreenState extends State<ScheduleScreen>
                         ),
                       ),
                       onPressed: () async {
-                        if (selectedCourse == null || dateCtrl.text.isEmpty)
+                        if (selectedCourse == null || dateCtrl.text.isEmpty) {
                           return;
+                        }
                         final ok = await ScheduleService.addExam({
                           'student_id': _auth.studentId,
                           'course_id': selectedCourse!.id,

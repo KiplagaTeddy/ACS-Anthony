@@ -241,7 +241,7 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                         const SizedBox(height: 14),
                         DropdownButtonFormField<String>(
-                          value: _department,
+                          initialValue: _department,
                           decoration: const InputDecoration(
                             labelText: 'Department',
                             prefixIcon: Icon(Icons.school_outlined),
@@ -260,7 +260,7 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                         const SizedBox(height: 14),
                         DropdownButtonFormField<String>(
-                          value: _yearOfStudy,
+                          initialValue: _yearOfStudy,
                           decoration: const InputDecoration(
                             labelText: 'Year of Study',
                             prefixIcon: Icon(Icons.calendar_today_outlined),

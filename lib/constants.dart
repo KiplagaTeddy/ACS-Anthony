@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppConstants {
-  static const String baseUrl = 'http://192.168.100.3/student_system/api';
+  // For web: use localhost directly
+  // For mobile: update to your machine's IP (e.g., http://192.168.x.x/student_system/api)
+  static const String baseUrl = 'http://localhost/student_system/api';
   static const String appName = 'Jipange';
 
   static const Color primaryColor = Color(0xFFE53935);
@@ -48,16 +50,21 @@ class AppConstants {
 
   // Kenyan 4.0 GPA scale
   static Map<String, dynamic> gradeFromMarks(double marks) {
-    if (marks >= 70)
+    if (marks >= 70) {
       return {'letter': 'A', 'points': 4.0, 'color': Color(0xFF69F0AE)};
-    if (marks >= 60)
+    }
+    if (marks >= 60) {
       return {'letter': 'B+', 'points': 3.5, 'color': Color(0xFF40C4FF)};
-    if (marks >= 50)
+    }
+    if (marks >= 50) {
       return {'letter': 'B', 'points': 3.0, 'color': Color(0xFF448AFF)};
-    if (marks >= 40)
+    }
+    if (marks >= 40) {
       return {'letter': 'C+', 'points': 2.5, 'color': Color(0xFFFFD740)};
-    if (marks >= 30)
+    }
+    if (marks >= 30) {
       return {'letter': 'C', 'points': 2.0, 'color': Color(0xFFFF6D00)};
+    }
     return {'letter': 'D', 'points': 1.0, 'color': Color(0xFFFF5252)};
   }
 }
