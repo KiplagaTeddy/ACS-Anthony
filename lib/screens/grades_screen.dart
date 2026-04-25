@@ -45,17 +45,19 @@ class _GradesScreenState extends State<GradesScreen>
   }
 
   Future<void> _load() async {
-    final results = await Future.wait([
-      GradeService.getAll(_auth.studentId),
-      CourseService.getAll(),
-    ]);
-    final data = results[0] as Map<String, dynamic>;
+    final gradeData = await GradeService.getAll(_auth.studentId);
+    final courses = await CourseService.getAll();
     setState(() {
-      _grades = data['grades'] as List<GradeModel>;
-      _overallGpa = double.parse((data['overall_gpa'] ?? 0).toString());
-      _totalCredits = int.parse((data['total_credits'] ?? 0).toString());
-      _termGpas = data['term_gpas'] as Map<String, dynamic>;
-      _courses = results[1] as List<CourseModel>;
+      // ✅ Fixed: use List.from() instead of direct cast
+      _grades = List<GradeModel>.from(gradeData['grades']);
+
+      _overallGpa = double.parse((gradeData['overall_gpa'] ?? 0).toString());
+      _totalCredits = int.parse((gradeData['total_credits'] ?? 0).toString());
+
+      // ✅ Fixed: use Map.from() instead of direct cast
+      _termGpas = Map<String, dynamic>.from(gradeData['term_gpas'] ?? {});
+
+      _courses = courses;
       _loading = false;
     });
   }
@@ -120,7 +122,7 @@ class _GradesScreenState extends State<GradesScreen>
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<CourseModel>(
-                    value: selectedCourse,
+                    initialValue: selectedCourse,
                     hint: const Text(
                       'Select course',
                       style: TextStyle(color: AppConstants.textSecondary),
@@ -146,7 +148,7 @@ class _GradesScreenState extends State<GradesScreen>
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedTerm,
+                    initialValue: selectedTerm,
                     decoration: const InputDecoration(labelText: 'Term'),
                     dropdownColor: AppConstants.surfaceColor,
                     style: const TextStyle(color: AppConstants.textPrimary),
@@ -213,8 +215,9 @@ class _GradesScreenState extends State<GradesScreen>
                       onPressed: () async {
                         if (selectedCourse == null ||
                             marksCtrl.text.isEmpty ||
-                            yearCtrl.text.isEmpty)
+                            yearCtrl.text.isEmpty) {
                           return;
+                        }
                         final ok = await GradeService.save({
                           'student_id': _auth.studentId,
                           'course_id': selectedCourse!.id,
@@ -333,6 +336,8 @@ class _GradesScreenState extends State<GradesScreen>
   }
 }
 
+// ── Supporting widgets ────────────────────────────────────────────────────────
+
 class _GpaStat extends StatelessWidget {
   final String label, value;
   final bool big;
@@ -400,7 +405,7 @@ class _TermView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Term GPA chip
+          // ── Term GPA chip ──────────────────────────────────────
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -558,9 +563,10 @@ class _TermView extends StatelessWidget {
           const Text('Unit Breakdown', style: AppConstants.subheadingStyle),
           const SizedBox(height: 12),
 
-          ...grades.map(
-            (g) => Dismissible(
-              key: Key(g.id.toString()),
+          ...grades.asMap().entries.map((entry) {
+            final g = entry.value;
+            return Dismissible(
+              key: Key('${entry.value.id}_${entry.value.term}_${entry.key}'),
               direction: DismissDirection.endToStart,
               background: Container(
                 alignment: Alignment.centerRight,
@@ -585,6 +591,7 @@ class _TermView extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
+                    // Grade letter badge
                     Container(
                       width: 50,
                       height: 50,
@@ -604,6 +611,7 @@ class _TermView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
+                    // Course info
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -623,6 +631,7 @@ class _TermView extends StatelessWidget {
                         ],
                       ),
                     ),
+                    // Marks & points
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -643,8 +652,8 @@ class _TermView extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );
