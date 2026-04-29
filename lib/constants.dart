@@ -1,9 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AppConstants {
-  // For web: use localhost directly
-  // For mobile: update to your machine's IP (e.g., http://192.168.x.x/student_system/api)
-  static const String baseUrl = 'http://localhost/student_system/api';
+  // Platform-aware API URL
+  // Web: localhost directly
+  // Mobile (Android emulator): 10.0.2.2 (special alias for host machine)
+  // Mobile (iOS simulator): use localhost
+  // Physical devices: use your machine's IP address
+  static String get baseUrl {
+    if (kIsWeb) {
+      return 'http://localhost/student_system/api';
+    } else {
+      // Default for mobile emulators - change to your IP for physical devices
+      return 'http://10.0.2.2/student_system/api';
+    }
+  }
+
   static const String appName = 'Jipange';
 
   static const Color primaryColor = Color(0xFFE53935);

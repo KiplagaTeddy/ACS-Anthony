@@ -7,6 +7,7 @@ import '../services/course_service.dart';
 import '../models/grade_model.dart';
 import '../models/course_model.dart';
 import '../constants.dart';
+import 'term_progress_report.dart';
 
 class GradesScreen extends StatefulWidget {
   const GradesScreen({super.key});
@@ -29,10 +30,13 @@ class _GradesScreenState extends State<GradesScreen>
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 3, vsync: this);
+    _tab = TabController(length: 4, vsync: this);
     _tab.addListener(() {
       if (!_tab.indexIsChanging) {
-        setState(() => _selectedTerm = AppConstants.terms[_tab.index]);
+        setState(
+          () => _selectedTerm =
+              AppConstants.terms[_tab.index < 3 ? _tab.index : 0],
+        );
       }
     });
     _load();
@@ -72,6 +76,14 @@ class _GradesScreenState extends State<GradesScreen>
     );
     if (key.isEmpty) return 0.0;
     return double.parse(_termGpas[key].toString());
+  }
+
+  String? _validateMarks(String value) {
+    if (value.isEmpty) return null;
+    final marks = double.tryParse(value);
+    if (marks == null) return 'Invalid number';
+    if (marks < 0 || marks > 100) return 'Must be 0-100';
+    return null;
   }
 
   void _showAddGrade() {
@@ -169,14 +181,18 @@ class _GradesScreenState extends State<GradesScreen>
                   const SizedBox(height: 12),
                   TextField(
                     controller: marksCtrl,
-                    keyboardType: TextInputType.number,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     style: const TextStyle(color: AppConstants.textPrimary),
                     onChanged: (_) => set(() {}),
                     decoration: InputDecoration(
                       labelText: 'Marks (0 – 100)',
+                      errorText: _validateMarks(marksCtrl.text),
                       suffixText:
                           marksCtrl.text.isNotEmpty &&
-                              double.tryParse(marksCtrl.text) != null
+                              double.tryParse(marksCtrl.text) != null &&
+                              _validateMarks(marksCtrl.text) == null
                           ? AppConstants.gradeFromMarks(
                                   double.parse(marksCtrl.text),
                                 )['letter']
@@ -218,6 +234,10 @@ class _GradesScreenState extends State<GradesScreen>
                             yearCtrl.text.isEmpty) {
                           return;
                         }
+                        // Validate marks before saving
+                        if (_validateMarks(marksCtrl.text) != null) {
+                          return;
+                        }
                         final ok = await GradeService.save({
                           'student_id': _auth.studentId,
                           'course_id': selectedCourse!.id,
@@ -257,7 +277,10 @@ class _GradesScreenState extends State<GradesScreen>
         title: const Text('Grades & Progress'),
         bottom: TabBar(
           controller: _tab,
-          tabs: AppConstants.terms.map((t) => Tab(text: t)).toList(),
+          tabs: [
+            ...AppConstants.terms.map((t) => Tab(text: t)),
+            const Tab(text: 'Progress'),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -315,19 +338,23 @@ class _GradesScreenState extends State<GradesScreen>
                 Expanded(
                   child: TabBarView(
                     controller: _tab,
-                    children: AppConstants.terms.map((term) {
-                      final termGrades = _gradesForTerm(term);
-                      final termGpa = _gpaForTerm(term);
-                      return _TermView(
-                        term: term,
-                        grades: termGrades,
-                        termGpa: termGpa,
-                        onDelete: (id) async {
-                          await GradeService.delete(id, _auth.studentId);
-                          _load();
-                        },
-                      );
-                    }).toList(),
+                    children: [
+                      ...AppConstants.terms.map((term) {
+                        final termGrades = _gradesForTerm(term);
+                        final termGpa = _gpaForTerm(term);
+                        return _TermView(
+                          term: term,
+                          grades: termGrades,
+                          termGpa: termGpa,
+                          onDelete: (id) async {
+                            await GradeService.delete(id, _auth.studentId);
+                            _load();
+                          },
+                        );
+                      }),
+                      // Progress tab
+                      TermProgressReport(grades: _grades),
+                    ],
                   ),
                 ),
               ],
